@@ -1,0 +1,72 @@
+openapi: 3.0.3
+info:
+  title: Paging Example
+  description: Paging Example
+  version: 1.0.0
+servers:
+  - url: 'https://localhost:5001'
+    description: https endpoint for asp.net core application
+  - url: 'http://localhost:5000'
+    description: non-secure endpoint for asp.net core application
+paths:
+  /:
+    get:
+      summary: returns a homepage
+      responses:
+        '200':
+          description: hello world application
+          content:
+            text/html:
+              
+  /pictures/paging:
+    get:
+      summary: return results using paging with page and size
+      parameters:
+        - name: page
+          in: query
+          required: true
+          description: Parameter description in CommonMark or HTML.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+         - name: size
+           in: query
+           required: true
+           description: Parameter description in CommonMark or HTML.
+           schema:
+             type: integer
+             format: int64
+             minimum: 1
+      responses:
+        '200':
+          description: ''
+          content: 
+            application/json:
+              
+  /pictures/cursor:
+    get:
+      summary: return results using paging with page and size
+      parameters:
+        - name: before
+          in: query
+          required: true
+          description: Parameter description in CommonMark or HTML.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+        - name: size
+          in: query
+          required: true
+          description: Parameter description in CommonMark or HTML.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+             

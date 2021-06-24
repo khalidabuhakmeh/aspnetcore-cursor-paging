@@ -1,0 +1,12 @@
+
+### Paging By Page and Size
+GET https://localhost:5001/pictures/paging?page=100000&size=10
+Accept: application/json
+
+### Paging By Cursor and Size
+GET https://localhost:5001/pictures/cursor?after=999990&size=10
+Accept: application/json
+
+### Paging By Cursor and Size with Dapper
+GET https://localhost:5001/pictures/dapper?after=999990&size=10
+Accept: application/json
