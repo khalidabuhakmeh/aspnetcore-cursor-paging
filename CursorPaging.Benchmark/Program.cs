@@ -39,6 +39,22 @@ try
     stopwatch.Start();
     var db = new Database();
     db.ChangeTracker.AutoDetectChangesEnabled = false;
+
+    await Database.SeedPicturesWithBulkExtensions(db, "with EFCore.BulkExtensions");
+    stopwatch.Stop();
+    AnsiConsole.WriteLine($"With EFCore.BulkExtensions: {stopwatch.Elapsed.TotalSeconds} seconds");
+}
+catch (Exception ex)
+{
+    AnsiConsole.WriteException(ex);
+}
+
+try
+{
+    DeleteIfExists("pictures.db");
+    stopwatch.Start();
+    var db = new Database();
+    db.ChangeTracker.AutoDetectChangesEnabled = false;
     
     await Database.SeedPictures(db, "without transaction scope");
     stopwatch.Stop();

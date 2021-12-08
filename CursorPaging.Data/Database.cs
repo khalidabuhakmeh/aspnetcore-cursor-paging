@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Bogus;
+using EFCore.BulkExtensions;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Spectre.Console;
@@ -54,6 +55,40 @@ namespace CursorPaging
                         }
 
                         task.StopTask();
+                    });
+
+                return SeedOperationResult.Seeded;
+            }
+            catch (Exception e)
+            {
+                AnsiConsole.WriteException(e);
+                return SeedOperationResult.Error;
+            }
+        }
+
+        public static async Task<SeedOperationResult> SeedPicturesWithBulkExtensions(Database database, string label = "normal")
+        {
+            try
+            {
+                await database.Database.MigrateAsync();
+
+                // already pre-loaded
+                if (await database.Pictures.AnyAsync())
+                    return SeedOperationResult.Skip;
+
+                // hold onto your butts
+                var data = new Faker<Picture>()
+                    .RuleFor(p => p.Url, f => f.Image.PicsumUrl())
+                    .GenerateForever();
+
+                await AnsiConsole
+                    .Progress()
+                    .AutoClear(false)
+                    .StartAsync(async ctx =>
+                    {
+                        const int max = 1_000_000;
+                        var task = ctx.AddTask($"Loading pictures - {label}", true, max);
+                        await database.BulkInsertAsync(data.Take(max).ToList(), bulkAction: c => c.NotifyAfter = 100_000, progress: p => task.Value = (double)p * max);
                     });
 
                 return SeedOperationResult.Seeded;
